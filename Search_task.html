@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search Bar Example</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  #searchContainer {
+    text-align: center;
+  }
+
+  #searchInput {
+    padding: 10px;
+    width: 300px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    margin-bottom: 20px;
+  }
+
+  #searchResults {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #fff;
+    text-align: left;
+  }
+
+  .resultItem {
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .resultItem{
+    background-color: #f5f5f5;
+  }
+
+  .noResultsMessage {
+    color: #666;
+  }
+</style>
+</head>
+<body>
+
+<div id="searchContainer">
+  <input type="text" id="searchInput" placeholder="Search..." oninput="searchFunction()">
+  <select id="categorySelect" onchange="changeCategory()">
+    <option value="fruits">Fruits</option>
+    <option value="animals">Animals</option>
+    <option value="flowers">Flowers</option>
+    <option value="colors">Colors</option>
+  </select>
+  <div id="searchResults"></div>
+</div>
+
+<script>
+  const fruits = [
+    "Apple", "Banana", "Orange", "Grape", "Pineapple",
+    "Strawberry", "Watermelon", "Cherry", "Mango", "Pear",
+    "Kiwi", "Blueberry", "Raspberry", "Lemon", "Peach",
+    "Apricot", "Plum", "Cantaloupe", "Coconut", "Pomegranate",
+    "Grapefruit", "Fig", "Lime", "Guava", "Papaya",
+    "Cranberry", "Lychee", "Passionfruit", "Dragonfruit", "Blackberry",
+    "Rhubarb", "Tangerine", "Honeydew", "Persimmon", "Nectarine",
+    "Starfruit", "Kumquat", "Mulberry", "Jackfruit", "Elderberry",
+    "Currant", "Quince", "Pawpaw", "Açaí", "Durian",
+    "Gooseberry", "Feijoa", "Carambola", "Ackee", "Salak"
+  ];
+
+  const animals = [
+    "Lion", "Elephant", "Tiger", "Giraffe", "Zebra",
+    "Monkey", "Kangaroo", "Penguin", "Hippopotamus", "Cheetah",
+    "Polar bear", "Crocodile", "Gorilla", "Koala", "Rhino",
+    "Wolf", "Fox", "Sloth", "Panda", "Bear",
+    "Leopard", "Lynx", "Camel", "Dolphin", "Whale",
+    "Shark", "Eagle", "Ostrich", "Alligator", "Antelope",
+    "Buffalo", "Owl", "Raccoon", "Falcon", "Jaguar",
+    "Bison", "Gazelle", "Hawk", "Lemur", "Mongoose",
+    "Meerkat", "Squirrel", "Porcupine", "Armadillo", "Ferret",
+    "Toucan", "Chimpanzee", "Orangutan", "Salamander", "Kookaburra"
+  ];
+
+  const flowers = [
+    "Rose", "Tulip", "Sunflower", "Daisy", "Lily",
+    "Daffodil", "Orchid", "Carnation", "Hydrangea", "Peony",
+    "Hibiscus", "Lavender", "Cherry blossom", "Dahlia", "Magnolia",
+    "Iris", "Poppy", "Jasmine", "Lotus", "Gerbera",
+    "Camellia", "Amaryllis", "Anemone", "Begonia", "Crocus",
+    "Gladiolus", "Marigold", "Pansy", "Petunia", "Snapdragon",
+    "Zinnia", "Chrysanthemum", "Freesia", "Gardenia", "Hyacinth",
+    "Lilac", "Narcissus", "Primrose", "Ranunculus", "Sweet pea",
+    "Aster", "Bougainvillea", "Cosmos", "Foxglove", "Lupine",
+    "Morning glory", "Plumeria", "Statice", "Verbena", "Wisteria"
+  ];
+
+  const colors = [
+    "Red", "Blue", "Green", "Yellow", "Orange",
+    "Purple", "Pink", "Turquoise", "Cyan", "Magenta",
+    "Lime", "Teal", "Violet", "Indigo", "Aquamarine",
+    "Sapphire", "Emerald", "Ruby", "Amethyst", "Topaz",
+    "Coral", "Gold", "Silver", "Bronze", "Platinum",
+    "Pearl", "Ivory", "Ebony", "Crimson", "Maroon",
+    "Lavender", "Olive", "Periwinkle", "Slate", "Peach",
+    "Mauve", "Tan", "Beige", "Turquoise", "Cyan",
+    "Salmon", "Lilac", "Mint", "Mustard", "Sky blue",
+    "Chocolate", "Tangerine", "Rose", "Burgundy", "Steel"
+  ];
+
+
+  var currentCategory = 'fruits'; 
+
+  function searchFunction() {
+    var input = document.getElementById('searchInput').value.toLowerCase();
+    var resultsContainer = document.getElementById('searchResults');
+
+    resultsContainer.innerHTML = '';
+
+    var searchData = getCategoryData(currentCategory);
+    var results = searchData.filter(function(item) {
+      return item.toLowerCase().includes(input);
+    });
+
+    if (results.length > 0) {
+      results.forEach(function(item) {
+        var resultItem = document.createElement('div');
+        resultItem.textContent = item;
+        resultItem.className = 'resultItem';
+        resultsContainer.appendChild(resultItem);
+      });
+    } else {
+      var noResultsMessage = document.createElement('div');
+      noResultsMessage.textContent = 'No results found.';
+      resultsContainer.appendChild(noResultsMessage);
+    }
+  }
+
+  function changeCategory() {
+    currentCategory = document.getElementById('categorySelect').value;
+    searchFunction();
+  }
+
+  function getCategoryData(category) {
+    switch (category) {
+      case 'fruits': return fruits;
+      case 'animals': return animals;
+      case 'flowers': return flowers;
+      case 'colors': return colors;
+      default: return [];
+    }
+  }
+</script>
+
+</body>
+</html>
